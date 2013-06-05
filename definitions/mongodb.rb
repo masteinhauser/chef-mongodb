@@ -162,6 +162,10 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
   
   # replicaset
   if !replicaset_name.nil? && node['mongodb']['auto_configure']['replicaset']
+    if Chef::Config[:solo]
+      Chef::Log.error("This recipe uses search. Chef Solo does not support search.")
+    else
+        
     rs_nodes = search(
       :node,
       "mongodb_cluster_name:#{replicaset['mongodb']['cluster_name']} AND \
@@ -177,6 +181,7 @@ define :mongodb_instance, :mongodb_type => "mongod" , :action => [:enable, :star
         end
       end
       action :nothing
+    end
     end
   end
   
